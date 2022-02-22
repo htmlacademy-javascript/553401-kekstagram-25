@@ -6,10 +6,6 @@ function getRandomInRange (min, max) {
   min = Math.ceil(min);
   max = Math.floor(max);
 
-  if (min < 0 || max < 0) {
-    return console.log('Введите положительные числа от ноля включительно');
-  }
-
   if (max < min) {
     return Math.floor(Math.random() * (min - max + 1)) + max;
   }
