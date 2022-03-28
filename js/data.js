@@ -59,10 +59,10 @@ const getCommentArray = (arrayLength) => {
 };
 
 //Создаем Случайную Фотокарточку
-const createPhotoCard = (id, url) => (
+const createPhotoCard = (number) => (
   {
-    id: id,
-    url: `photos/${  url  }.jpg`,
+    id: number,
+    url: `photos/${  number  }.jpg`,
     description: getRandomArrayElement(DESCRIPTIONS),
     likes: getRandomPositiveInteger (AMOUNT_LIKES_MIN, AMOUNT_LIKES_MAX), /** количество лайков от 15 до 300 */
     comments: getCommentArray(getRandomPositiveInteger(1, AMOUNT_COMMENTS_MAX)), /** количество комментариев от 1 до 6 */
@@ -75,7 +75,7 @@ const getPhotoArray = (arrayLength) => {
   const idArray = createShuffleArray(1, arrayLength);
 
   for (let i = 0; i < arrayLength; i++) {
-    const photoCard = createPhotoCard(idArray[i], i + 1);
+    const photoCard = createPhotoCard(idArray[i]);
     photoCards.push(photoCard);
   }
 
