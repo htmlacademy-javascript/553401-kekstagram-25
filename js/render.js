@@ -1,9 +1,9 @@
 const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
-const pictureListFragment = document.createDocumentFragment();
-
 const renderCards = (cardsArray) => {
+  const pictureListFragment = document.createDocumentFragment();
+
   cardsArray.forEach((card) => {
     const pictureItem = pictureTemplate.cloneNode(true);
     pictureItem.querySelector('.picture__img').src = card.url;
