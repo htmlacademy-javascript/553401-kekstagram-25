@@ -82,4 +82,6 @@ const getPhotoArray = (arrayLength) => {
   return photoCards;
 };
 
-export {AMOUNT_PHOTOCARDS, getPhotoArray};
+const photoArray = getPhotoArray(AMOUNT_PHOTOCARDS);
+
+export {photoArray};

@@ -1,7 +1,7 @@
 const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
-const renderCards = (cardsArray) => {
+const renderPictures = (cardsArray) => {
   const pictureListFragment = document.createDocumentFragment();
 
   cardsArray.forEach((card) => {
@@ -15,4 +15,4 @@ const renderCards = (cardsArray) => {
   picturesContainer.appendChild(pictureListFragment);
 };
 
-export {renderCards};
+export {picturesContainer, renderPictures};
