@@ -28,20 +28,24 @@ const addPictureClickHandler = (card) => {
   socialCommentsBlock.appendChild(commentsListFragment);
 
   bigPicture.classList.remove('hidden');
+
+  document.addEventListener('keydown', closeBigPicture);
 };
+
+function closeBigPicture (evt) {
+  if ((evt.keyCode === 27)  && !bigPicture.classList.contains('hidden')) {
+    bigPicture.classList.add('hidden');
+    document.querySelector('body').classList.remove('modal-open');
+    document.removeEventListener('keydown', closeBigPicture);
+  }
+}
 
 const cancel = bigPicture.querySelector('.big-picture__cancel');
 
 cancel.addEventListener('click', () => {
   bigPicture.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
-});
-
-document.addEventListener('keydown', (evt) => {
-  if ((evt.keyCode === 27)  && !bigPicture.classList.contains('hidden')) {
-    bigPicture.classList.add('hidden');
-    document.querySelector('body').classList.remove('modal-open');
-  }
+  document.removeEventListener('keydown', closeBigPicture);
 });
 
 export {addPictureClickHandler};
