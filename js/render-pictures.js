@@ -1,7 +1,9 @@
+import {addPictureClickHandler} from './render-full-picture.js';
+
 const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
-const renderCards = (cardsArray) => {
+const renderPictures = (cardsArray) => {
   const pictureListFragment = document.createDocumentFragment();
 
   cardsArray.forEach((card) => {
@@ -9,10 +11,15 @@ const renderCards = (cardsArray) => {
     pictureItem.querySelector('.picture__img').src = card.url;
     pictureItem.querySelector('.picture__comments').textContent = card.comments.length;
     pictureItem.querySelector('.picture__likes').textContent = card.likes;
+
+    pictureItem.addEventListener('click', () => {
+      addPictureClickHandler(card);
+    });
+
     pictureListFragment.appendChild(pictureItem);
   });
 
   picturesContainer.appendChild(pictureListFragment);
 };
 
-export {renderCards};
+export {renderPictures};
