@@ -1,6 +1,4 @@
 import {renderPictures} from './render-pictures.js';
-import {photoArray} from './data.js';
-import {renderFullPicture} from './render-full-picture.js';
+import {AMOUNT_PHOTOCARDS, getPhotoArray} from './data.js';
 
-renderPictures(photoArray);
-renderFullPicture();
+renderPictures(getPhotoArray(AMOUNT_PHOTOCARDS));
