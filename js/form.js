@@ -54,13 +54,13 @@ const getArrayOfValues = (value) => value.toUpperCase().split(' ').filter(String
 // сравниваем поле хештегов на соответствие регулярного выражения
 function validateHashtagsRe (value) {
   arrayOfHashtags = getArrayOfValues(value);
+  // при пустом поле возвращаем true
+  if (value.length === 0) {
+    return true;
+  }
   // проверка регулярного выражения если поле не пустое
   for (let i = 0; i < arrayOfHashtags.length; i++) {
-    if (value.length === 0) {
-      return true;
-    } else {
-      return re.test(arrayOfHashtags[i]);
-    }
+    return re.test(arrayOfHashtags[i]);
   }
 }
 
