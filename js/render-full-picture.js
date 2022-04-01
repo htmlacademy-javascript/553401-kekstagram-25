@@ -1,9 +1,9 @@
 const bigPicture = document.querySelector('.big-picture');
+const cancel = bigPicture.querySelector('.big-picture__cancel');
 
-const addPictureClickHandler = (card) => {
+const openBigPicture = (card) => {
   bigPicture.querySelector('.social__comment-count').classList.add('hidden');  // временно
   bigPicture.querySelector('.comments-loader').classList.add('hidden');   // временно
-  document.querySelector('body').classList.add('modal-open');
 
   bigPicture.querySelector('.big-picture__img img').src = card.url;
   bigPicture.querySelector('.likes-count').textContent = card.likes;
@@ -27,25 +27,27 @@ const addPictureClickHandler = (card) => {
 
   socialCommentsBlock.appendChild(commentsListFragment);
 
+  document.querySelector('body').classList.add('modal-open');
   bigPicture.classList.remove('hidden');
 
-  document.addEventListener('keydown', closeBigPicture);
+  document.addEventListener('keydown', onPopupEscKeydown);
 };
 
-function closeBigPicture (evt) {
-  if ((evt.keyCode === 27)  && !bigPicture.classList.contains('hidden')) {
-    bigPicture.classList.add('hidden');
-    document.querySelector('body').classList.remove('modal-open');
-    document.removeEventListener('keydown', closeBigPicture);
+function closePopup () {
+  bigPicture.classList.add('hidden');
+  document.querySelector('body').classList.remove('modal-open');
+  document.removeEventListener('keydown', onPopupEscKeydown);
+}
+
+function onPopupEscKeydown (evt) {
+  if (evt.key === 'Escape') {
+    evt.preventDefault();
+    closePopup();
   }
 }
 
-const cancel = bigPicture.querySelector('.big-picture__cancel');
-
 cancel.addEventListener('click', () => {
-  bigPicture.classList.add('hidden');
-  document.querySelector('body').classList.remove('modal-open');
-  document.removeEventListener('keydown', closeBigPicture);
+  closePopup (bigPicture);
 });
 
-export {addPictureClickHandler};
+export {openBigPicture};
