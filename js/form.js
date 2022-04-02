@@ -1,5 +1,6 @@
 import {hasDuplicates} from './util.js';
 const AMOUNT_HASHTAGS = 5;
+const AMOUNT_COMMENT_SYMBOLS = 140;
 const form = document.querySelector('.img-upload__form');
 const formPopup = form.querySelector('.img-upload__overlay');
 const uploadButton = form.querySelector('#upload-file');
@@ -7,7 +8,6 @@ const cancel = form.querySelector('#upload-cancel');
 const hashtagsInput = form.querySelector('.text__hashtags');
 const commentArea = form.querySelector('.text__description');
 const re = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
-let arrayOfHashtags;
 
 uploadButton.addEventListener('change', () => {
   openUploadForm ();
@@ -53,25 +53,31 @@ const getArrayOfValues = (value) => value.toUpperCase().split(' ').filter(String
 
 // сравниваем поле хештегов на соответствие регулярного выражения
 function validateHashtagsRe (value) {
-  arrayOfHashtags = getArrayOfValues(value);
   // при пустом поле возвращаем true
   if (value.length === 0) {
     return true;
   }
+
+  const arrayOfHashtags = getArrayOfValues(value);
+
   // проверка регулярного выражения если поле не пустое
   for (let i = 0; i < arrayOfHashtags.length; i++) {
-    return re.test(arrayOfHashtags[i]);
+    if (!re.test(arrayOfHashtags[i])) {
+      return false;
+    }
   }
+
+  return true;
 }
 
 // проверка на дубликаты хэштегов (регистр не важен)
-function validateHashtagsDublicates () {
-  return !hasDuplicates(arrayOfHashtags);
+function validateHashtagsDublicates (value) {
+  return !hasDuplicates(getArrayOfValues(value));
 }
 
 // проверка на максимальное количество хэштегов
-function validateHashtagsLength () {
-  return arrayOfHashtags.length <= AMOUNT_HASHTAGS;
+function validateHashtagsLength (value) {
+  return getArrayOfValues(value).length <= AMOUNT_HASHTAGS;
 }
 
 pristine.addValidator(
@@ -89,17 +95,17 @@ pristine.addValidator(
 pristine.addValidator(
   hashtagsInput,
   validateHashtagsLength,
-  'Максимум можно 5 хештегов'
+  `Максимум можно ${ AMOUNT_HASHTAGS } хештегов`
 );
 
 function validateComment (value) {
-  return value.length <= 140;
+  return value.length <= AMOUNT_COMMENT_SYMBOLS;
 }
 
 pristine.addValidator(
   commentArea,
   validateComment,
-  'До 140 символов'
+  `До ${  AMOUNT_COMMENT_SYMBOLS  } символов`
 );
 
 const validateForm = () => {
