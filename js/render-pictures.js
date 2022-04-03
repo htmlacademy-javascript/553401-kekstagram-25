@@ -1,4 +1,4 @@
-import {addPictureClickHandler} from './render-full-picture.js';
+import {openBigPicture} from './render-full-picture.js';
 
 const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
@@ -13,7 +13,7 @@ const renderPictures = (cardsArray) => {
     pictureItem.querySelector('.picture__likes').textContent = card.likes;
 
     pictureItem.addEventListener('click', () => {
-      addPictureClickHandler(card);
+      openBigPicture(card);
     });
 
     pictureListFragment.appendChild(pictureItem);

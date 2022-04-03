@@ -37,4 +37,8 @@ const createShuffleArray = (start, end) => {
   return array;
 };
 
-export {getRandomPositiveInteger, getRandomArrayElement, createShuffleArray, isStringLength};
+function hasDuplicates(array) {
+  return (new Set(array)).size !== array.length;
+}
+
+export {getRandomPositiveInteger, getRandomArrayElement, createShuffleArray, isStringLength, hasDuplicates};
