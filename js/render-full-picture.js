@@ -31,12 +31,14 @@ const openBigPicture = (card) => {
   bigPicture.classList.remove('hidden');
 
   document.addEventListener('keydown', onPopupEscKeydown);
+  cancel.addEventListener('click', onClickCancel);
 };
 
 function closePopup () {
   bigPicture.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
   document.removeEventListener('keydown', onPopupEscKeydown);
+  cancel.removeEventListener('click', onClickCancel);
 }
 
 function onPopupEscKeydown (evt) {
@@ -46,8 +48,8 @@ function onPopupEscKeydown (evt) {
   }
 }
 
-cancel.addEventListener('click', () => {
-  closePopup (bigPicture);
-});
+function onClickCancel () {
+  closePopup ();
+}
 
 export {openBigPicture};
