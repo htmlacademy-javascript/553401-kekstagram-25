@@ -1,13 +1,126 @@
 const SCALE_STEP = 25;
 const MIN_SCALE = 25;
 const MAX_SCALE = 100;
+const DEFAULT_EFFECT_VALUE = 100;
 const scaleValue = document.querySelector('.scale__control--value');
 const imagePreview = document.querySelector('.img-upload__preview img');
 const sliderFieldset = document.querySelector('.effect-level');
 const effectSlider = sliderFieldset.querySelector('.effect-level__slider');
 const effectValue = sliderFieldset.querySelector('.effect-level__value');
 let effectClass = 'effects__preview--none';
-let effectName = 'none';
+let currentEffect = 'none';
+
+const styleEffectObj = {
+  'chrome': 'grayscale',
+  'sepia': 'sepia',
+  'marvin': 'invert',
+  'phobos': 'blur',
+  'heat': 'brightness'
+};
+
+const filtersObj = {
+  'none': {
+    range: {
+      min: 0,
+      max: 100,
+    },
+    start: 100,
+    step: 1,
+    format: {
+      to: function (value) {
+        return value;
+      },
+      from: function (value) {
+        return parseFloat(value);
+      }
+    },
+  },
+
+  'chrome': {
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+    format: {
+      to: function (value) {
+        return value;
+      },
+      from: function (value) {
+        return parseFloat(value);
+      }
+    },
+  },
+
+  'sepia': {
+    range: {
+      min: 0,
+      max: 1,
+    },
+    start: 1,
+    step: 0.1,
+    format: {
+      to: function (value) {
+        return value;
+      },
+      from: function (value) {
+        return parseFloat(value);
+      }
+    },
+  },
+
+  'marvin': {
+    range: {
+      min: 0,
+      max: 100,
+    },
+    start: 100,
+    step: 1,
+    format: {
+      to: function (value) {
+        return `${value  }%`;
+      },
+      from: function (value) {
+        return parseFloat(value);
+      }
+    },
+  },
+
+  'phobos': {
+    range: {
+      min: 0,
+      max: 3,
+    },
+    start: 3,
+    step: 0.1,
+    format: {
+      to: function (value) {
+        return `${value  }px`;
+      },
+      from: function (value) {
+        return parseFloat(value);
+      }
+    },
+  },
+
+  'heat': {
+    range: {
+      min: 1,
+      max: 3,
+    },
+    start: 3,
+    step: 0.1,
+    format: {
+      to: function (value) {
+        return value;
+      },
+      from: function (value) {
+        return parseFloat(value);
+      }
+    },
+  },
+};
 
 const onScaleSmallerClick = () => {
   const NumberOfScaleValue = parseInt(scaleValue.value, 10);
@@ -27,7 +140,7 @@ const onScaleBiggerClick = () => {
   }
 };
 
-effectValue.value = 100;
+effectValue.value = DEFAULT_EFFECT_VALUE;
 
 noUiSlider.create(effectSlider, {
   range: {
@@ -39,91 +152,27 @@ noUiSlider.create(effectSlider, {
   connect: 'lower',
 });
 
-const getStyleEffect = (effect) => {
-  switch (effect) {
-    case 'chrome':
-      return 'grayscale';
-    case 'sepia':
-      return 'sepia';
-    case 'marvin':
-      return 'invert';
-    case 'phobos':
-      return 'blur';
-    case 'heat':
-      return 'brightness';
-  }
-};
-
 effectSlider.noUiSlider.on('update', () => {
   effectValue.value = effectSlider.noUiSlider.get();
-  const styleEffect = getStyleEffect(effectName);
-
-  if (styleEffect === 'invert') {
-    imagePreview.style.filter = `${styleEffect}(${effectValue.value}%)`;
-  } else if (styleEffect === 'blur') {
-    imagePreview.style.filter = `${styleEffect}(${effectValue.value}px)`;
-  } else {
-    imagePreview.style.filter = `${styleEffect}(${effectValue.value})`;
-  }
+  const filterName = styleEffectObj[currentEffect];
+  imagePreview.style.filter = `${filterName}(${effectValue.value})`;
 });
 
 function onEffectChange (evt) {
-  effectName = evt.target.value;
+  currentEffect = evt.target.value;
   imagePreview.classList.remove(effectClass);
 
-  effectClass = `effects__preview--${  evt.target.value}`;
+  effectClass = `effects__preview--${evt.target.value}`;
   imagePreview.classList.add(effectClass);
 
-  if (effectName === 'none') {
+  if (currentEffect === 'none') {
     imagePreview.style.removeProperty('filter');
     sliderFieldset.classList.add('hidden');
   } else {
     sliderFieldset.classList.remove('hidden');
   }
 
-  if (effectName === 'chrome' || effectName === 'sepia') {
-    effectSlider.noUiSlider.updateOptions({
-      range: {
-        min: 0,
-        max: 1,
-      },
-      start: 100,
-      step: 0.1,
-    });
-  }
-
-  if (effectName === 'marvin') {
-    effectSlider.noUiSlider.updateOptions({
-      range: {
-        min: 0,
-        max: 100,
-      },
-      start: 100,
-      step: 1,
-    });
-  }
-
-  if (effectName === 'phobos') {
-    effectSlider.noUiSlider.updateOptions({
-      range: {
-        min: 0,
-        max: 3,
-      },
-      start: 3,
-      step: 0.1,
-    });
-  }
-
-  if (effectName === 'heat') {
-    effectSlider.noUiSlider.updateOptions({
-      range: {
-        min: 1,
-        max: 3,
-      },
-      start: 3,
-      step: 0.1,
-    });
-  }
+  effectSlider.noUiSlider.updateOptions(filtersObj[currentEffect]);
 }
 
 export {onScaleSmallerClick, onScaleBiggerClick, onEffectChange};
