@@ -10,114 +10,104 @@ const effectValue = sliderFieldset.querySelector('.effect-level__value');
 let effectClass = 'effects__preview--none';
 let currentEffect = 'none';
 
-const styleEffectObj = {
-  'chrome': 'grayscale',
-  'sepia': 'sepia',
-  'marvin': 'invert',
-  'phobos': 'blur',
-  'heat': 'brightness'
-};
-
 const filtersObj = {
-  'none': {
-    range: {
-      min: 0,
-      max: 100,
-    },
-    start: 100,
-    step: 1,
-    format: {
-      to: function (value) {
-        return value;
-      },
-      from: function (value) {
-        return parseFloat(value);
-      }
-    },
-  },
-
   'chrome': {
-    range: {
-      min: 0,
-      max: 1,
-    },
-    start: 1,
-    step: 0.1,
-    format: {
-      to: function (value) {
-        return value;
+    filterName: 'grayscale',
+    filterParams: {
+      range: {
+        min: 0,
+        max: 1,
       },
-      from: function (value) {
-        return parseFloat(value);
-      }
+      start: 1,
+      step: 0.1,
+      format: {
+        to: function (value) {
+          return value;
+        },
+        from: function (value) {
+          return parseFloat(value);
+        }
+      },
     },
   },
 
   'sepia': {
-    range: {
-      min: 0,
-      max: 1,
-    },
-    start: 1,
-    step: 0.1,
-    format: {
-      to: function (value) {
-        return value;
+    filterName: 'sepia',
+    filterParams: {
+      range: {
+        min: 0,
+        max: 1,
       },
-      from: function (value) {
-        return parseFloat(value);
-      }
+      start: 1,
+      step: 0.1,
+      format: {
+        to: function (value) {
+          return value;
+        },
+        from: function (value) {
+          return parseFloat(value);
+        }
+      },
     },
   },
 
   'marvin': {
-    range: {
-      min: 0,
-      max: 100,
-    },
-    start: 100,
-    step: 1,
-    format: {
-      to: function (value) {
-        return `${value  }%`;
+    filterName: 'invert',
+    filterParams: {
+      range: {
+        min: 0,
+        max: 100,
       },
-      from: function (value) {
-        return parseFloat(value);
-      }
+      start: 100,
+      step: 1,
+      format: {
+        to: function (value) {
+          return `${value  }%`;
+        },
+        from: function (value) {
+          return parseFloat(value);
+        }
+      },
     },
   },
 
   'phobos': {
-    range: {
-      min: 0,
-      max: 3,
-    },
-    start: 3,
-    step: 0.1,
-    format: {
-      to: function (value) {
-        return `${value  }px`;
+    filterName: 'blur',
+    filterParams: {
+      range: {
+        min: 0,
+        max: 3,
       },
-      from: function (value) {
-        return parseFloat(value);
-      }
+      start: 3,
+      step: 0.1,
+      format: {
+        to: function (value) {
+          return `${value  }px`;
+        },
+        from: function (value) {
+          return parseFloat(value);
+        }
+      },
     },
   },
 
   'heat': {
-    range: {
-      min: 1,
-      max: 3,
-    },
-    start: 3,
-    step: 0.1,
-    format: {
-      to: function (value) {
-        return value;
+    filterName: 'brightness',
+    filterParams: {
+      range: {
+        min: 1,
+        max: 3,
       },
-      from: function (value) {
-        return parseFloat(value);
-      }
+      start: 3,
+      step: 0.1,
+      format: {
+        to: function (value) {
+          return value;
+        },
+        from: function (value) {
+          return parseFloat(value);
+        }
+      },
     },
   },
 };
@@ -153,9 +143,12 @@ noUiSlider.create(effectSlider, {
 });
 
 effectSlider.noUiSlider.on('update', () => {
-  effectValue.value = effectSlider.noUiSlider.get();
-  const filterName = styleEffectObj[currentEffect];
-  imagePreview.style.filter = `${filterName}(${effectValue.value})`;
+  if (currentEffect !== 'none') {
+    const styleFilterValue = effectSlider.noUiSlider.get();
+    effectValue.value = parseFloat(styleFilterValue);
+    const currentFilter = filtersObj[currentEffect]['filterName'];
+    imagePreview.style.filter = `${currentFilter}(${styleFilterValue})`;
+  }
 });
 
 function onEffectChange (evt) {
@@ -170,9 +163,8 @@ function onEffectChange (evt) {
     sliderFieldset.classList.add('hidden');
   } else {
     sliderFieldset.classList.remove('hidden');
+    effectSlider.noUiSlider.updateOptions(filtersObj[currentEffect]['filterParams']);
   }
-
-  effectSlider.noUiSlider.updateOptions(filtersObj[currentEffect]);
 }
 
 export {onScaleSmallerClick, onScaleBiggerClick, onEffectChange};
