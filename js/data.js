@@ -1,12 +1,10 @@
-import {getRandomPositiveInteger, getRandomArrayElement, createShuffleArray, isStringLength} from './util.js';
+import {getRandomPositiveInteger, getRandomArrayElement, createShuffleArray} from './util.js';
 
-const MAX_LENGTH_COMMENT = 140;
 const AMOUNT_AVATARS = 6;
 const AMOUNT_COMMENTS_MAX = 6;
 const AMOUNT_LIKES_MIN = 15;
 const AMOUNT_LIKES_MAX = 200;
 const AMOUNT_PHOTOCARDS = 25;
-const COMMENT = 'Это временная константа';
 const NAMES = [
   'Иван',
   'Хуан Себастьян',
@@ -31,9 +29,6 @@ const MESSAGES = [
   'В целом всё неплохо. Но не всё.',
   'Когда вы делаете фотографию, хорошо бы убирать палец из кадра. В конце концов это просто непрофессионально.',
 ];
-
-// !!!Временно!!! используем функцию максимальной длины
-isStringLength (COMMENT, MAX_LENGTH_COMMENT);
 
 // Создаем комментарий для карточки
 const createCommentForCard = (id) => (

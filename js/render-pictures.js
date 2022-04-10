@@ -1,5 +1,7 @@
 import {openBigPicture} from './render-full-picture.js';
 
+const AMOUNT_PHOTOCARDS = 25;
+
 const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
@@ -22,4 +24,4 @@ const renderPictures = (cardsArray) => {
   picturesContainer.appendChild(pictureListFragment);
 };
 
-export {renderPictures};
+export {renderPictures, AMOUNT_PHOTOCARDS};

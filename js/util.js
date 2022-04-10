@@ -1,3 +1,5 @@
+const ALERT_SHOW_TIME = 5000;
+
 // Функция, возвращающая случайное целое положительное число из переданного диапазона включительно, последовательность не важна
 const getRandomPositiveInteger = (a, b) => {
   const min = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
@@ -14,10 +16,6 @@ const getRandomPositiveInteger = (a, b) => {
 // Возвращает случайный элемент массива
 const getRandomArrayElement = (elements) =>
   elements[getRandomPositiveInteger(0, elements.length - 1)];
-
-//Функция для проверки максимальной длины строки
-const isStringLength = (string, maxLength) =>
-  string.length <= maxLength;
 
 // Создает массив перемешанных чисел в заданном диапазоне
 const createShuffleArray = (start, end) => {
@@ -37,8 +35,28 @@ const createShuffleArray = (start, end) => {
   return array;
 };
 
-function hasDuplicates(array) {
-  return (new Set(array)).size !== array.length;
-}
+const hasDuplicates = (array) => (new Set(array)).size !== array.length;
 
-export {getRandomPositiveInteger, getRandomArrayElement, createShuffleArray, isStringLength, hasDuplicates};
+const showAlert = (message) => {
+  const alertContainer = document.createElement('div');
+  alertContainer.style.zIndex = 100;
+  alertContainer.style.position = 'absolute';
+  alertContainer.style.left = 0;
+  alertContainer.style.top = '10px';
+  alertContainer.style.right = 0;
+  alertContainer.style.padding = '10px 3px';
+  alertContainer.style.fontSize = '20px';
+  alertContainer.style.textAlign = 'center';
+  alertContainer.style.backgroundColor = 'lightgray';
+  alertContainer.style.color = 'red';
+
+  alertContainer.textContent = message;
+
+  document.body.append(alertContainer);
+
+  setTimeout(() => {
+    alertContainer.remove();
+  }, ALERT_SHOW_TIME);
+};
+
+export {getRandomPositiveInteger, getRandomArrayElement, createShuffleArray, hasDuplicates, showAlert};

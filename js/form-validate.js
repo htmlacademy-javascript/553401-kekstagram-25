@@ -1,55 +1,22 @@
-import {hasDuplicates} from './util.js';
-import {onScaleSmallerClick, onScaleBiggerClick, onEffectChange} from './upload-image-effects.js';
+import {hasDuplicates, showAlert} from './util.js';
+import {form, hashtagsInput, commentArea} from './form-display.js';
+import {sendData} from './api.js';
 
 const AMOUNT_HASHTAGS = 5;
 const AMOUNT_COMMENT_SYMBOLS = 140;
-const form = document.querySelector('.img-upload__form');
-const formPopup = form.querySelector('.img-upload__overlay');
-const uploadButton = form.querySelector('#upload-file');
-const cancel = form.querySelector('#upload-cancel');
-const hashtagsInput = form.querySelector('.text__hashtags');
-const commentArea = form.querySelector('.text__description');
 const re = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
-const scaleSmaller = form.querySelector('.scale__control--smaller');
-const scaleBigger = form.querySelector('.scale__control--bigger');
-const effectsBlock = form.querySelector('.effects');
+const submitButton = form.querySelector('.img-upload__submit');
 
-uploadButton.addEventListener('change', () => {
-  openUploadForm ();
-});
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Отправляю...';
+};
 
-function openUploadForm () {
-  formPopup.classList.remove('hidden');
-  document.querySelector('body').classList.add('modal-open');
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
 
-  document.addEventListener('keydown', onPopupEscKeydown);
-  cancel.addEventListener('click', onClickCancel);
-  scaleSmaller.addEventListener('click', onScaleSmallerClick);
-  scaleBigger.addEventListener('click', onScaleBiggerClick);
-  effectsBlock.addEventListener('change', onEffectChange);
-  uploadButton.value = '';
-}
-
-function closePopup () {
-  formPopup.classList.add('hidden');
-  document.querySelector('body').classList.remove('modal-open');
-  document.removeEventListener('keydown', onPopupEscKeydown);
-  cancel.removeEventListener('click',onClickCancel);
-  scaleSmaller.removeEventListener('click', onScaleSmallerClick);
-  scaleBigger.removeEventListener('click', onScaleBiggerClick);
-  effectsBlock.removeEventListener('change', onEffectChange);
-}
-
-function onPopupEscKeydown (evt) {
-  if (evt.key === 'Escape' && hashtagsInput !== document.activeElement && commentArea !== document.activeElement) {
-    evt.preventDefault();
-    closePopup();
-  }
-}
-
-function onClickCancel () {
-  closePopup ();
-}
 
 const pristine = new Pristine(form, {
   classTo: 'text__label',
@@ -121,11 +88,25 @@ pristine.addValidator(
   `До ${  AMOUNT_COMMENT_SYMBOLS  } символов`
 );
 
-const validateForm = () => {
+const setUserFormSubmit = (onSuccess) => {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    pristine.validate();
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess();
+          unblockSubmitButton();
+        },
+        () => {
+          showAlert('Не удалось отправить форму. Попробуйте ещё раз');
+          unblockSubmitButton();
+        },
+        new FormData(evt.target),
+      );
+    }
   });
 };
 
-export {validateForm};
+export {setUserFormSubmit};
