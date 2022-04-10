@@ -1,4 +1,6 @@
 import {hasDuplicates} from './util.js';
+import {onScaleSmallerClick, onScaleBiggerClick, onEffectChange} from './upload-image-effects.js';
+
 const AMOUNT_HASHTAGS = 5;
 const AMOUNT_COMMENT_SYMBOLS = 140;
 const form = document.querySelector('.img-upload__form');
@@ -8,6 +10,9 @@ const cancel = form.querySelector('#upload-cancel');
 const hashtagsInput = form.querySelector('.text__hashtags');
 const commentArea = form.querySelector('.text__description');
 const re = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
+const scaleSmaller = form.querySelector('.scale__control--smaller');
+const scaleBigger = form.querySelector('.scale__control--bigger');
+const effectsBlock = form.querySelector('.effects');
 
 uploadButton.addEventListener('change', () => {
   openUploadForm ();
@@ -18,6 +23,10 @@ function openUploadForm () {
   document.querySelector('body').classList.add('modal-open');
 
   document.addEventListener('keydown', onPopupEscKeydown);
+  cancel.addEventListener('click', onClickCancel);
+  scaleSmaller.addEventListener('click', onScaleSmallerClick);
+  scaleBigger.addEventListener('click', onScaleBiggerClick);
+  effectsBlock.addEventListener('change', onEffectChange);
   uploadButton.value = '';
 }
 
@@ -25,6 +34,10 @@ function closePopup () {
   formPopup.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
   document.removeEventListener('keydown', onPopupEscKeydown);
+  cancel.removeEventListener('click',onClickCancel);
+  scaleSmaller.removeEventListener('click', onScaleSmallerClick);
+  scaleBigger.removeEventListener('click', onScaleBiggerClick);
+  effectsBlock.removeEventListener('change', onEffectChange);
 }
 
 function onPopupEscKeydown (evt) {
@@ -34,9 +47,9 @@ function onPopupEscKeydown (evt) {
   }
 }
 
-cancel.addEventListener('click', () => {
+function onClickCancel () {
   closePopup ();
-});
+}
 
 const pristine = new Pristine(form, {
   classTo: 'text__label',
