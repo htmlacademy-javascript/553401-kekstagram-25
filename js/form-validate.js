@@ -1,4 +1,4 @@
-import {hasDuplicates, showAlert} from './util.js';
+import {hasDuplicates} from './util.js';
 import {form, hashtagsInput, commentArea} from './form-display.js';
 import {sendData} from './api.js';
 
