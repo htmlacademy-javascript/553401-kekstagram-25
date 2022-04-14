@@ -1,55 +1,57 @@
 import {hasDuplicates} from './util.js';
-import {onScaleSmallerClick, onScaleBiggerClick, onEffectChange} from './upload-image-effects.js';
+import {form, hashtagsInput, commentArea} from './form-display.js';
+import {sendData} from './api.js';
 
 const AMOUNT_HASHTAGS = 5;
 const AMOUNT_COMMENT_SYMBOLS = 140;
-const form = document.querySelector('.img-upload__form');
-const formPopup = form.querySelector('.img-upload__overlay');
-const uploadButton = form.querySelector('#upload-file');
-const cancel = form.querySelector('#upload-cancel');
-const hashtagsInput = form.querySelector('.text__hashtags');
-const commentArea = form.querySelector('.text__description');
 const re = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
-const scaleSmaller = form.querySelector('.scale__control--smaller');
-const scaleBigger = form.querySelector('.scale__control--bigger');
-const effectsBlock = form.querySelector('.effects');
+const submitButton = form.querySelector('.img-upload__submit');
+const body = document.querySelector('body');
+const successTemplate = document.querySelector('#success').content.querySelector('.success');
+const errorTemplate = document.querySelector('#error').content.querySelector('.error');
 
-uploadButton.addEventListener('change', () => {
-  openUploadForm ();
-});
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Отправляю...';
+};
 
-function openUploadForm () {
-  formPopup.classList.remove('hidden');
-  document.querySelector('body').classList.add('modal-open');
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
+const renderMessage = (typeError, template) => {
+  const messageFragment = document.createDocumentFragment();
+  const message = template.cloneNode(true);
+  const button = message.querySelector(`.${typeError}__button`);
+
+  message.addEventListener('click', (evt) => {
+    if (evt.target.classList.contains(typeError)) {
+      closeMessage();
+    }
+  });
+
+  button.addEventListener('click', () => {
+    closeMessage();
+  });
 
   document.addEventListener('keydown', onPopupEscKeydown);
-  cancel.addEventListener('click', onClickCancel);
-  scaleSmaller.addEventListener('click', onScaleSmallerClick);
-  scaleBigger.addEventListener('click', onScaleBiggerClick);
-  effectsBlock.addEventListener('change', onEffectChange);
-  uploadButton.value = '';
-}
 
-function closePopup () {
-  formPopup.classList.add('hidden');
-  document.querySelector('body').classList.remove('modal-open');
-  document.removeEventListener('keydown', onPopupEscKeydown);
-  cancel.removeEventListener('click',onClickCancel);
-  scaleSmaller.removeEventListener('click', onScaleSmallerClick);
-  scaleBigger.removeEventListener('click', onScaleBiggerClick);
-  effectsBlock.removeEventListener('change', onEffectChange);
-}
-
-function onPopupEscKeydown (evt) {
-  if (evt.key === 'Escape' && hashtagsInput !== document.activeElement && commentArea !== document.activeElement) {
-    evt.preventDefault();
-    closePopup();
+  function onPopupEscKeydown (evt) {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      closeMessage();
+    }
   }
-}
 
-function onClickCancel () {
-  closePopup ();
-}
+  function closeMessage () {
+    message.remove();
+    document.removeEventListener('keydown', onPopupEscKeydown);
+  }
+
+  messageFragment.appendChild(message);
+  body.appendChild(messageFragment);
+};
 
 const pristine = new Pristine(form, {
   classTo: 'text__label',
@@ -121,11 +123,27 @@ pristine.addValidator(
   `До ${  AMOUNT_COMMENT_SYMBOLS  } символов`
 );
 
-const validateForm = () => {
+const setUserFormSubmit = (onSuccess, onError) => {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
-    pristine.validate();
+    const isValid = pristine.validate();
+    if (isValid) {
+      blockSubmitButton();
+      sendData(
+        () => {
+          onSuccess();
+          unblockSubmitButton();
+          renderMessage('success', successTemplate);
+        },
+        () => {
+          onError();
+          unblockSubmitButton();
+          renderMessage('error', errorTemplate);
+        },
+        new FormData(evt.target),
+      );
+    }
   });
 };
 
-export {validateForm};
+export {setUserFormSubmit};

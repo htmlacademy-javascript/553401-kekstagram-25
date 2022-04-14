@@ -167,4 +167,12 @@ function onEffectChange (evt) {
   }
 }
 
-export {onScaleSmallerClick, onScaleBiggerClick, onEffectChange};
+const resetEffect = () => {
+  imagePreview.classList.remove(effectClass);
+  imagePreview.classList.add('effects__preview--none');
+  imagePreview.style.removeProperty('filter');
+  imagePreview.style.removeProperty('transform');
+  sliderFieldset.classList.add('hidden');
+};
+
+export {onScaleSmallerClick, onScaleBiggerClick, onEffectChange, resetEffect};

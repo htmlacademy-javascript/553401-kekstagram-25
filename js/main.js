@@ -1,6 +1,14 @@
-import {renderPictures} from './render-pictures.js';
-import {AMOUNT_PHOTOCARDS, getPhotoArray} from './data.js';
-import {validateForm} from './form.js';
+import {renderPictures, AMOUNT_PHOTOCARDS} from './render-pictures.js';
+import {closePopup} from './form-display.js';
+import {showAlert} from './util.js';
+import {setUserFormSubmit} from './form-validate.js';
+import {getData} from './api.js';
 
-validateForm();
-renderPictures(getPhotoArray(AMOUNT_PHOTOCARDS));
+getData(
+  (photos) => {
+    renderPictures(photos.slice(0, AMOUNT_PHOTOCARDS));
+  },
+  () => showAlert('Не удалось получить данные. Попробуйте обновить страницу')
+);
+
+setUserFormSubmit(closePopup, closePopup);

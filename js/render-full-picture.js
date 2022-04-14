@@ -1,7 +1,7 @@
 const bigPicture = document.querySelector('.big-picture');
 const cancel = bigPicture.querySelector('.big-picture__cancel');
 
-const openBigPicture = (card) => {
+const renderBigPicture = (card) => {
   bigPicture.querySelector('.social__comment-count').classList.add('hidden');  // временно
   bigPicture.querySelector('.comments-loader').classList.add('hidden');   // временно
 
@@ -26,6 +26,10 @@ const openBigPicture = (card) => {
   socialCommentsBlock.innerHTML = '';
 
   socialCommentsBlock.appendChild(commentsListFragment);
+};
+
+const openBigPicture = (card) => {
+  renderBigPicture(card);
 
   document.querySelector('body').classList.add('modal-open');
   bigPicture.classList.remove('hidden');
