@@ -6,6 +6,9 @@ const AMOUNT_HASHTAGS = 5;
 const AMOUNT_COMMENT_SYMBOLS = 140;
 const re = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
 const submitButton = form.querySelector('.img-upload__submit');
+const body = document.querySelector('body');
+const successTemplate = document.querySelector('#success').content.querySelector('.success');
+const errorTemplate = document.querySelector('#error').content.querySelector('.error');
 
 const blockSubmitButton = () => {
   submitButton.disabled = true;
@@ -17,6 +20,38 @@ const unblockSubmitButton = () => {
   submitButton.textContent = 'Опубликовать';
 };
 
+const renderMessage = (typeError, template) => {
+  const messageFragment = document.createDocumentFragment();
+  const message = template.cloneNode(true);
+  const button = message.querySelector(`.${typeError}__button`);
+
+  message.addEventListener('click', (evt) => {
+    if (evt.target.classList.contains(typeError)) {
+      closeMessage();
+    }
+  });
+
+  button.addEventListener('click', () => {
+    closeMessage();
+  });
+
+  document.addEventListener('keydown', onPopupEscKeydown);
+
+  function onPopupEscKeydown (evt) {
+    if (evt.key === 'Escape') {
+      evt.preventDefault();
+      closeMessage();
+    }
+  }
+
+  function closeMessage () {
+    message.remove();
+    document.removeEventListener('keydown', onPopupEscKeydown);
+  }
+
+  messageFragment.appendChild(message);
+  body.appendChild(messageFragment);
+};
 
 const pristine = new Pristine(form, {
   classTo: 'text__label',
@@ -88,7 +123,7 @@ pristine.addValidator(
   `До ${  AMOUNT_COMMENT_SYMBOLS  } символов`
 );
 
-const setUserFormSubmit = (onSuccess) => {
+const setUserFormSubmit = (onSuccess, onError) => {
   form.addEventListener('submit', (evt) => {
     evt.preventDefault();
     const isValid = pristine.validate();
@@ -98,10 +133,12 @@ const setUserFormSubmit = (onSuccess) => {
         () => {
           onSuccess();
           unblockSubmitButton();
+          renderMessage('success', successTemplate);
         },
         () => {
-          showAlert('Не удалось отправить форму. Попробуйте ещё раз');
+          onError();
           unblockSubmitButton();
+          renderMessage('error', errorTemplate);
         },
         new FormData(evt.target),
       );

@@ -1,4 +1,4 @@
-import {onScaleSmallerClick, onScaleBiggerClick, onEffectChange} from './upload-image-effects.js';
+import {onScaleSmallerClick, onScaleBiggerClick, onEffectChange, resetEffect} from './upload-image-effects.js';
 
 const form = document.querySelector('.img-upload__form');
 const formPopup = form.querySelector('.img-upload__overlay');
@@ -33,6 +33,14 @@ function closePopup () {
   scaleSmaller.removeEventListener('click', onScaleSmallerClick);
   scaleBigger.removeEventListener('click', onScaleBiggerClick);
   effectsBlock.removeEventListener('change', onEffectChange);
+  resetForm();
+}
+
+function resetForm () {
+  uploadButton.value = '';
+  hashtagsInput.textContent = '';
+  commentArea.textContent = '';
+  resetEffect();
 }
 
 function onPopupEscKeydown (evt) {
