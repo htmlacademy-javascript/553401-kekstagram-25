@@ -4,17 +4,17 @@ const AMOUNT_PHOTOCARDS = 25;
 const AMOUNT_RANDOM_PHOTOCARDS = 10;
 
 const filtersBlock = document.querySelector('.img-filters');
+let activeFilter = filtersBlock.querySelector('.img-filters__button--active');
 
 const compareCommentsLength = (imgA, imgB) => imgB.comments.length - imgA.comments.length;
 
 const setActiveFilterClick = (callback) => {
   filtersBlock.addEventListener('click',  (evt) => {
     if (evt.target.nodeName === 'BUTTON') {
-      const activeFilter = filtersBlock.querySelector('.img-filters__button--active');
-
       if (!evt.target.classList.contains('img-filters__button--active')) {
         activeFilter.classList.remove('img-filters__button--active');
         evt.target.classList.add('img-filters__button--active');
+        activeFilter = document.querySelector('.img-filters__button--active');
       }
 
       callback();
@@ -22,24 +22,25 @@ const setActiveFilterClick = (callback) => {
   });
 };
 
-const getFilteredArray = (activeElement, array) => {
+const getFilteredArray = (array) => {
   const cardsArrayDefault = array.slice();
   let cardsArrayFiltered;
 
-  if (activeElement.id === 'filter-default') {
-    cardsArrayFiltered = cardsArrayDefault;
+  switch (activeFilter.id) {
+    case 'filter-default':
+      cardsArrayFiltered = cardsArrayDefault;
+      break;
+    case 'filter-random':
+      cardsArrayFiltered = getShuffleArray(cardsArrayDefault)
+        .slice(0, AMOUNT_RANDOM_PHOTOCARDS);
+      break;
+    case 'filter-discussed':
+      cardsArrayFiltered = cardsArrayDefault
+        .sort(compareCommentsLength)
+        .slice(0, AMOUNT_PHOTOCARDS);
+      break;
   }
 
-  if (activeElement.id === 'filter-random') {
-    cardsArrayFiltered = getShuffleArray(cardsArrayDefault)
-      .slice(0, AMOUNT_RANDOM_PHOTOCARDS);
-  }
-
-  if (activeElement.id === 'filter-discussed') {
-    cardsArrayFiltered = cardsArrayDefault
-      .sort(compareCommentsLength)
-      .slice(0, AMOUNT_PHOTOCARDS);
-  }
   return cardsArrayFiltered;
 };
 

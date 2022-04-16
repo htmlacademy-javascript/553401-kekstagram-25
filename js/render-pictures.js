@@ -1,14 +1,12 @@
 import {openBigPicture} from './render-full-picture.js';
-import {getFilteredArray} from './filters.js';
 
 const picturesContainer = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
 const renderPictures = (cardsArray) => {
   const pictureListFragment = document.createDocumentFragment();
-  const activeFilter = document.querySelector('.img-filters__button--active');
 
-  getFilteredArray(activeFilter, cardsArray)
+  cardsArray
     .forEach((card) => {
       const pictureItem = pictureTemplate.cloneNode(true);
       pictureItem.querySelector('.picture__img').src = card.url;
