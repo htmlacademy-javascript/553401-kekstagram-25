@@ -1,4 +1,4 @@
-import {onScaleSmallerClick, onScaleBiggerClick, onEffectChange, resetEffect} from './upload-image-effects.js';
+import {onScaleSmallerClick, onScaleBiggerClick, onEffectChange, resetEffect, showPreviewImage} from './upload-image-effects.js';
 
 const form = document.querySelector('.img-upload__form');
 const formPopup = form.querySelector('.img-upload__overlay');
@@ -11,6 +11,7 @@ const scaleBigger = form.querySelector('.scale__control--bigger');
 const effectsBlock = form.querySelector('.effects');
 
 uploadButton.addEventListener('change', () => {
+  showPreviewImage (uploadButton);
   openUploadForm ();
 });
 
