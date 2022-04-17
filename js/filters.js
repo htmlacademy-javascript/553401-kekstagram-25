@@ -23,25 +23,25 @@ const setActiveFilterClick = (callback) => {
 };
 
 const getFilteredArray = (array) => {
-  const cardsArrayDefault = array.slice();
-  let cardsArrayFiltered;
+  const arrayDefault = array.slice();
+  let arrayFiltered;
 
   switch (activeFilter.id) {
     case 'filter-default':
-      cardsArrayFiltered = cardsArrayDefault;
+      arrayFiltered = arrayDefault;
       break;
     case 'filter-random':
-      cardsArrayFiltered = getShuffleArray(cardsArrayDefault)
+      arrayFiltered = getShuffleArray(arrayDefault)
         .slice(0, AMOUNT_RANDOM_PHOTOCARDS);
       break;
     case 'filter-discussed':
-      cardsArrayFiltered = cardsArrayDefault
+      arrayFiltered = arrayDefault
         .sort(compareCommentsLength)
         .slice(0, AMOUNT_PHOTOCARDS);
       break;
   }
 
-  return cardsArrayFiltered;
+  return arrayFiltered;
 };
 
 export {filtersBlock, compareCommentsLength, setActiveFilterClick, getFilteredArray};
