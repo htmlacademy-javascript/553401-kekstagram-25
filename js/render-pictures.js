@@ -1,6 +1,6 @@
 import {openBigPicture} from './render-full-picture.js';
 
-const picturesContainer = document.querySelector('.pictures');
+const picturesBlock = document.querySelector('.pictures');
 const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
 
 const renderPictures = (cardsArray) => {
@@ -20,11 +20,11 @@ const renderPictures = (cardsArray) => {
       pictureListFragment.appendChild(pictureItem);
     });
 
-  while (picturesContainer.querySelector('.picture')) {
-    picturesContainer.removeChild(picturesContainer.querySelector('.picture'));
+  while (picturesBlock.querySelector('.picture')) {
+    picturesBlock.removeChild(picturesBlock.querySelector('.picture'));
   }
 
-  picturesContainer.appendChild(pictureListFragment);
+  picturesBlock.appendChild(pictureListFragment);
 };
 
 export {renderPictures};
