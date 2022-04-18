@@ -1,50 +1,37 @@
 const DEFAULT_COUNT_COMMENTS = 5;
 const bigPicture = document.querySelector('.big-picture');
 const cancel = bigPicture.querySelector('.big-picture__cancel');
-const commentCountBlock = bigPicture.querySelector('.social__comment-count');
 const commentsShowCount = bigPicture.querySelector('.comments-show');
-const commentsCount = bigPicture.querySelector('.comments-count');
 const loadMoreButton = bigPicture.querySelector('.comments-loader');
-let countCommentsForShow = DEFAULT_COUNT_COMMENTS;
+const socialCommentsBlock = bigPicture.querySelector('.social__comments');
+const commentsListFragment = document.createDocumentFragment();
+let cardComments = [];
+let counter = 0;
 
 const renderBigPicture = (card) => {
   bigPicture.querySelector('.big-picture__img img').src = card.url;
   bigPicture.querySelector('.likes-count').textContent = card.likes;
   bigPicture.querySelector('.comments-count').textContent = card.comments.length;
   bigPicture.querySelector('.social__caption').textContent = card.description;
+  loadMoreButton.classList.remove('hidden');
 
-  const socialCommentsBlock = bigPicture.querySelector('.social__comments');
-  const commentsListFragment = document.createDocumentFragment();
+  counter = 0;
+  cardComments = card.comments;
 
-  card.comments.forEach((comment) => {
-    const newComment = socialCommentsBlock.children[0].cloneNode(true);
-
-    newComment.querySelector('.social__picture').src = comment.avatar;
-    newComment.querySelector('.social__picture').alt = comment.name;
-    newComment.querySelector('.social__text').textContent = comment.message;
-
-    commentsListFragment.appendChild(newComment);
-  });
-
-  countCommentsForShow = DEFAULT_COUNT_COMMENTS;
-  commentsShowCount.textContent = countCommentsForShow;
+  renderCommentsForCard (cardComments, counter);
 
   socialCommentsBlock.innerHTML = '';
-
   socialCommentsBlock.appendChild(commentsListFragment);
+
 };
 
 const openBigPicture = (card) => {
   renderBigPicture(card);
 
-  const usersCommentsBlocks = document.querySelectorAll('.social__comment');
-
-  showDefaultCountComments(usersCommentsBlocks);
-  loadMoreButton.addEventListener('click', onShowMoreClick);
-
   document.querySelector('body').classList.add('modal-open');
   bigPicture.classList.remove('hidden');
 
+  loadMoreButton.addEventListener('click', onLoadMoreButtonClick);
   document.addEventListener('keydown', onPopupEscKeydown);
   cancel.addEventListener('click', onClickCancel);
 };
@@ -54,39 +41,31 @@ function closePopup () {
   document.querySelector('body').classList.remove('modal-open');
   document.removeEventListener('keydown', onPopupEscKeydown);
   cancel.removeEventListener('click', onClickCancel);
-  loadMoreButton.removeEventListener('click', onShowMoreClick);
+  loadMoreButton.removeEventListener('click', onLoadMoreButtonClick);
 }
 
-function showDefaultCountComments (commentBlocksCollection) {
-  if (commentBlocksCollection.length <= DEFAULT_COUNT_COMMENTS) {
-    commentCountBlock.classList.add('hidden');
-    loadMoreButton.classList.add('hidden');
-  } else {
-    commentCountBlock.classList.remove('hidden');
-    loadMoreButton.classList.remove('hidden');
-    commentsCount.textContent = commentBlocksCollection.length;
-
-    for (let i = DEFAULT_COUNT_COMMENTS; i < commentBlocksCollection.length; i++) {
-      commentBlocksCollection[i].classList.add('hidden');
-    }
-  }
-}
-
-function onShowMoreClick () {
-  const usersCommentsBlocks = document.querySelectorAll('.social__comment');
-
-  for (let i = 0; i < DEFAULT_COUNT_COMMENTS; i++) {
-    if (countCommentsForShow < usersCommentsBlocks.length) {
-      usersCommentsBlocks[countCommentsForShow].classList.remove('hidden');
-      countCommentsForShow++;
-
-    } else {
+function renderCommentsForCard (array, count) {
+  for (let i = count; i < count + DEFAULT_COUNT_COMMENTS && i < array.length; i++) {
+    if (i >= array.length - 1) {
       loadMoreButton.classList.add('hidden');
-      break;
     }
-  }
 
-  commentsShowCount.textContent = countCommentsForShow;
+    const newComment = socialCommentsBlock.children[0].cloneNode(true);
+
+    newComment.querySelector('.social__picture').src = array[i].avatar;
+    newComment.querySelector('.social__picture').alt = array[i].name;
+    newComment.querySelector('.social__text').textContent = array[i].message;
+
+    commentsListFragment.appendChild(newComment);
+
+    counter++;
+    commentsShowCount.textContent = counter;
+  }
+}
+
+function onLoadMoreButtonClick () {
+  renderCommentsForCard (cardComments, counter);
+  socialCommentsBlock.appendChild(commentsListFragment);
 }
 
 function onPopupEscKeydown (evt) {
