@@ -45,12 +45,9 @@ function closePopup () {
 }
 
 function renderCommentsForCard (array, count) {
-  for (let i = count; i < count + DEFAULT_COUNT_COMMENTS; i++) {
+  for (let i = count; i < count + DEFAULT_COUNT_COMMENTS & i < array.length; i++) {
     if (i >= array.length - 1) {
       loadMoreButton.classList.add('hidden');
-    }
-    if (i >= array.length) {
-      break;
     }
 
     const newComment = socialCommentsBlock.children[0].cloneNode(true);
