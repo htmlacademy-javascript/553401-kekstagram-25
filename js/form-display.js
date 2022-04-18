@@ -1,4 +1,4 @@
-import {onScaleSmallerClick, onScaleBiggerClick, onEffectChange, resetEffect, showPreviewImage} from './upload-image-effects.js';
+import {onClickScaleSmaller, onClickScaleBigger, onEffectChange, resetEffect, showPreviewImage} from './upload-image-effects.js';
 
 const form = document.querySelector('.img-upload__form');
 const formPopup = form.querySelector('.img-upload__overlay');
@@ -10,39 +10,34 @@ const scaleSmaller = form.querySelector('.scale__control--smaller');
 const scaleBigger = form.querySelector('.scale__control--bigger');
 const effectsBlock = form.querySelector('.effects');
 
-uploadButton.addEventListener('change', () => {
-  showPreviewImage (uploadButton);
-  openUploadForm ();
-});
+const resetForm = () => {
+  uploadButton.value = '';
+  hashtagsInput.textContent = '';
+  commentArea.textContent = '';
+  resetEffect();
+};
 
-function openUploadForm () {
+const openUploadForm = () => {
   formPopup.classList.remove('hidden');
   document.querySelector('body').classList.add('modal-open');
 
   document.addEventListener('keydown', onPopupEscKeydown);
   cancel.addEventListener('click', onClickCancel);
-  scaleSmaller.addEventListener('click', onScaleSmallerClick);
-  scaleBigger.addEventListener('click', onScaleBiggerClick);
+  scaleSmaller.addEventListener('click', onClickScaleSmaller);
+  scaleBigger.addEventListener('click', onClickScaleBigger);
   effectsBlock.addEventListener('change', onEffectChange);
-}
+};
 
-function closePopup () {
+const closePopup = () => {
   formPopup.classList.add('hidden');
   document.querySelector('body').classList.remove('modal-open');
   document.removeEventListener('keydown', onPopupEscKeydown);
   cancel.removeEventListener('click',onClickCancel);
-  scaleSmaller.removeEventListener('click', onScaleSmallerClick);
-  scaleBigger.removeEventListener('click', onScaleBiggerClick);
+  scaleSmaller.removeEventListener('click', onClickScaleSmaller);
+  scaleBigger.removeEventListener('click', onClickScaleBigger);
   effectsBlock.removeEventListener('change', onEffectChange);
   resetForm();
-}
-
-function resetForm () {
-  uploadButton.value = '';
-  hashtagsInput.textContent = '';
-  commentArea.textContent = '';
-  resetEffect();
-}
+};
 
 function onPopupEscKeydown (evt) {
   if (evt.key === 'Escape' && hashtagsInput !== document.activeElement && commentArea !== document.activeElement) {
@@ -54,5 +49,10 @@ function onPopupEscKeydown (evt) {
 function onClickCancel () {
   closePopup ();
 }
+
+uploadButton.addEventListener('change', () => {
+  showPreviewImage (uploadButton);
+  openUploadForm ();
+});
 
 export {form, hashtagsInput, commentArea, closePopup};

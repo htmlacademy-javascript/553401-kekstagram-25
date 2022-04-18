@@ -37,7 +37,7 @@ const showAlert = (message) => {
   }, ALERT_SHOW_TIME);
 };
 
-const debounce = (callback, timeoutDelay) => {
+const debouncing = (callback, timeoutDelay) => {
   let timeoutId;
   return (...rest) => {
     clearTimeout(timeoutId);
@@ -45,4 +45,4 @@ const debounce = (callback, timeoutDelay) => {
   };
 };
 
-export {getShuffleArray, hasDuplicates, showAlert, debounce, RERENDER_DELAY};
+export {getShuffleArray, hasDuplicates, showAlert, debouncing, RERENDER_DELAY};

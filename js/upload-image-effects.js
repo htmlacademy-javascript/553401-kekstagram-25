@@ -2,7 +2,7 @@ const SCALE_STEP = 25;
 const MIN_SCALE = 25;
 const MAX_SCALE = 100;
 const DEFAULT_EFFECT_VALUE = 100;
-const FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+const TYPES_OF_FILE = ['gif', 'jpg', 'jpeg', 'png'];
 const scaleValue = document.querySelector('.scale__control--value');
 const imagePreview = document.querySelector('.img-upload__preview img');
 const sliderFieldset = document.querySelector('.effect-level');
@@ -15,7 +15,7 @@ const showPreviewImage = (input) => {
   const file = input.files[0];
   const fileName = file.name.toLowerCase();
 
-  const matches = FILE_TYPES.some((it) => fileName.endsWith(it));
+  const matches = TYPES_OF_FILE.some((it) => fileName.endsWith(it));
 
   if (matches) {
     imagePreview.src = URL.createObjectURL(file);
@@ -33,12 +33,8 @@ const filtersObj = {
       start: 1,
       step: 0.1,
       format: {
-        to: function (value) {
-          return value;
-        },
-        from: function (value) {
-          return parseFloat(value);
-        }
+        to: (value) => value,
+        from: (value) => parseFloat(value)
       },
     },
   },
@@ -53,12 +49,8 @@ const filtersObj = {
       start: 1,
       step: 0.1,
       format: {
-        to: function (value) {
-          return value;
-        },
-        from: function (value) {
-          return parseFloat(value);
-        }
+        to: (value) => value,
+        from: (value) => parseFloat(value)
       },
     },
   },
@@ -73,12 +65,8 @@ const filtersObj = {
       start: 100,
       step: 1,
       format: {
-        to: function (value) {
-          return `${value  }%`;
-        },
-        from: function (value) {
-          return parseFloat(value);
-        }
+        to: (value) => `${value  }%`,
+        from: (value) => parseFloat(value)
       },
     },
   },
@@ -93,12 +81,8 @@ const filtersObj = {
       start: 3,
       step: 0.1,
       format: {
-        to: function (value) {
-          return `${value  }px`;
-        },
-        from: function (value) {
-          return parseFloat(value);
-        }
+        to: (value) => `${value  }px`,
+        from: (value) => parseFloat(value)
       },
     },
   },
@@ -113,31 +97,27 @@ const filtersObj = {
       start: 3,
       step: 0.1,
       format: {
-        to: function (value) {
-          return value;
-        },
-        from: function (value) {
-          return parseFloat(value);
-        }
+        to: (value) => value,
+        from: (value) => parseFloat(value)
       },
     },
   },
 };
 
-const onScaleSmallerClick = () => {
-  const NumberOfScaleValue = parseInt(scaleValue.value, 10);
-  if (NumberOfScaleValue > MIN_SCALE) {
-    scaleValue.value =  `${NumberOfScaleValue - SCALE_STEP}%`;
-    const scaleTransformValue = (NumberOfScaleValue - SCALE_STEP) / 100;
+const onClickScaleSmaller = () => {
+  const numberOfScaleValue = parseInt(scaleValue.value, 10);
+  if (numberOfScaleValue > MIN_SCALE) {
+    scaleValue.value =  `${numberOfScaleValue - SCALE_STEP}%`;
+    const scaleTransformValue = (numberOfScaleValue - SCALE_STEP) / 100;
     imagePreview.style.transform = `scale(${scaleTransformValue})`;
   }
 };
 
-const onScaleBiggerClick = () => {
-  const NumberOfScaleValue = parseInt(scaleValue.value, 10);
-  if (NumberOfScaleValue < MAX_SCALE) {
-    scaleValue.value =  `${NumberOfScaleValue + SCALE_STEP}%`;
-    const scaleTransformValue = (NumberOfScaleValue + SCALE_STEP) / 100;
+const onClickScaleBigger = () => {
+  const numberOfScaleValue = parseInt(scaleValue.value, 10);
+  if (numberOfScaleValue < MAX_SCALE) {
+    scaleValue.value =  `${numberOfScaleValue + SCALE_STEP}%`;
+    const scaleTransformValue = (numberOfScaleValue + SCALE_STEP) / 100;
     imagePreview.style.transform = `scale(${scaleTransformValue})`;
   }
 };
@@ -163,7 +143,7 @@ effectSlider.noUiSlider.on('update', () => {
   }
 });
 
-function onEffectChange (evt) {
+const onEffectChange = (evt) => {
   currentEffect = evt.target.value;
   imagePreview.classList.remove(effectClass);
 
@@ -177,7 +157,7 @@ function onEffectChange (evt) {
     sliderFieldset.classList.remove('hidden');
     effectSlider.noUiSlider.updateOptions(filtersObj[currentEffect]['filterParams']);
   }
-}
+};
 
 const resetEffect = () => {
   imagePreview.classList.remove(effectClass);
@@ -187,4 +167,4 @@ const resetEffect = () => {
   sliderFieldset.classList.add('hidden');
 };
 
-export {onScaleSmallerClick, onScaleBiggerClick, onEffectChange, resetEffect, showPreviewImage};
+export {onClickScaleSmaller, onClickScaleBigger, onEffectChange, resetEffect, showPreviewImage};
