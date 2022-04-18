@@ -20,9 +20,11 @@ const renderPictures = (cardsArray) => {
       pictureListFragment.appendChild(pictureItem);
     });
 
-  while (picturesBlock.querySelector('.picture')) {
-    picturesBlock.removeChild(picturesBlock.querySelector('.picture'));
-  }
+  const pictures = picturesBlock.querySelectorAll('.picture');
+
+  pictures.forEach((picture) => {
+    picturesBlock.removeChild(picture);
+  });
 
   picturesBlock.appendChild(pictureListFragment);
 };

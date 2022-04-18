@@ -4,7 +4,7 @@ import {sendData} from './api.js';
 
 const AMOUNT_HASHTAGS = 5;
 const AMOUNT_COMMENT_SYMBOLS = 140;
-const re = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
+const REGULAR_EXPRESSION_FOR_HASHTAGS = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
 const submitButton = form.querySelector('.img-upload__submit');
 const body = document.querySelector('body');
 const successTemplate = document.querySelector('#success').content.querySelector('.success');
@@ -25,16 +25,18 @@ const renderMessage = (typeError, template) => {
   const message = template.cloneNode(true);
   const button = message.querySelector(`.${typeError}__button`);
 
+  const closeMessage = () => {
+    message.remove();
+    document.removeEventListener('keydown', onPopupEscKeydown);
+  };
+
   message.addEventListener('click', (evt) => {
     if (evt.target.classList.contains(typeError)) {
       closeMessage();
     }
   });
 
-  button.addEventListener('click', () => {
-    closeMessage();
-  });
-
+  button.addEventListener('click', closeMessage);
   document.addEventListener('keydown', onPopupEscKeydown);
 
   function onPopupEscKeydown (evt) {
@@ -42,11 +44,6 @@ const renderMessage = (typeError, template) => {
       evt.preventDefault();
       closeMessage();
     }
-  }
-
-  function closeMessage () {
-    message.remove();
-    document.removeEventListener('keydown', onPopupEscKeydown);
   }
 
   messageFragment.appendChild(message);
@@ -67,37 +64,24 @@ const pristine = new Pristine(form, {
 const getArrayOfValues = (value) => value.toUpperCase().split(' ').filter(String);
 
 // сравниваем поле хештегов на соответствие регулярного выражения
-function validateHashtagsRe (value) {
+const validateHashtagsRegExp = (value) => {
   // при пустом поле возвращаем true
   if (value.length === 0) {
     return true;
   }
 
-  const arrayOfHashtags = getArrayOfValues(value);
-
-  // проверка регулярного выражения если поле не пустое
-  for (let i = 0; i < arrayOfHashtags.length; i++) {
-    if (!re.test(arrayOfHashtags[i])) {
-      return false;
-    }
-  }
-
-  return true;
-}
+  return getArrayOfValues(value).every((it) => REGULAR_EXPRESSION_FOR_HASHTAGS.test(it));
+};
 
 // проверка на дубликаты хэштегов (регистр не важен)
-function validateHashtagsDublicates (value) {
-  return !hasDuplicates(getArrayOfValues(value));
-}
+const validateHashtagsDublicates = (value) => !hasDuplicates(getArrayOfValues(value));
 
 // проверка на максимальное количество хэштегов
-function validateHashtagsLength (value) {
-  return getArrayOfValues(value).length <= AMOUNT_HASHTAGS;
-}
+const validateHashtagsLength = (value) => getArrayOfValues(value).length <= AMOUNT_HASHTAGS;
 
 pristine.addValidator(
   hashtagsInput,
-  validateHashtagsRe,
+  validateHashtagsRegExp,
   'Хештеги начинаются с #, разделяются пробелом'
 );
 
@@ -113,9 +97,7 @@ pristine.addValidator(
   `Максимум можно ${ AMOUNT_HASHTAGS } хештегов`
 );
 
-function validateComment (value) {
-  return value.length <= AMOUNT_COMMENT_SYMBOLS;
-}
+const validateComment = (value) => value.length <= AMOUNT_COMMENT_SYMBOLS;
 
 pristine.addValidator(
   commentArea,

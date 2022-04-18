@@ -8,45 +8,9 @@ const commentsListFragment = document.createDocumentFragment();
 let cardComments = [];
 let counter = 0;
 
-const renderBigPicture = (card) => {
-  bigPicture.querySelector('.big-picture__img img').src = card.url;
-  bigPicture.querySelector('.likes-count').textContent = card.likes;
-  bigPicture.querySelector('.comments-count').textContent = card.comments.length;
-  bigPicture.querySelector('.social__caption').textContent = card.description;
-  loadMoreButton.classList.remove('hidden');
-
-  counter = 0;
-  cardComments = card.comments;
-
-  renderCommentsForCard (cardComments, counter);
-
-  socialCommentsBlock.innerHTML = '';
-  socialCommentsBlock.appendChild(commentsListFragment);
-
-};
-
-const openBigPicture = (card) => {
-  renderBigPicture(card);
-
-  document.querySelector('body').classList.add('modal-open');
-  bigPicture.classList.remove('hidden');
-
-  loadMoreButton.addEventListener('click', onLoadMoreButtonClick);
-  document.addEventListener('keydown', onPopupEscKeydown);
-  cancel.addEventListener('click', onClickCancel);
-};
-
-function closePopup () {
-  bigPicture.classList.add('hidden');
-  document.querySelector('body').classList.remove('modal-open');
-  document.removeEventListener('keydown', onPopupEscKeydown);
-  cancel.removeEventListener('click', onClickCancel);
-  loadMoreButton.removeEventListener('click', onLoadMoreButtonClick);
-}
-
-function renderCommentsForCard (array, count) {
+const renderCommentsForCard = (array, count) => {
   for (let i = count; i < count + DEFAULT_COUNT_COMMENTS && i < array.length; i++) {
-    if (i >= array.length - 1) {
+    if (i === array.length - 1) {
       loadMoreButton.classList.add('hidden');
     }
 
@@ -61,12 +25,47 @@ function renderCommentsForCard (array, count) {
     counter++;
     commentsShowCount.textContent = counter;
   }
-}
+};
 
-function onLoadMoreButtonClick () {
+const renderBigPicture = (card) => {
+  bigPicture.querySelector('.big-picture__img img').src = card.url;
+  bigPicture.querySelector('.likes-count').textContent = card.likes;
+  bigPicture.querySelector('.comments-count').textContent = card.comments.length;
+  bigPicture.querySelector('.social__caption').textContent = card.description;
+  loadMoreButton.classList.remove('hidden');
+
+  counter = 0;
+  cardComments = card.comments;
+
+  renderCommentsForCard (cardComments, counter);
+
+  socialCommentsBlock.innerHTML = '';
+  socialCommentsBlock.appendChild(commentsListFragment);
+};
+
+const onClickLoadMoreButton = () => {
   renderCommentsForCard (cardComments, counter);
   socialCommentsBlock.appendChild(commentsListFragment);
-}
+};
+
+const openBigPicture = (card) => {
+  renderBigPicture(card);
+
+  document.querySelector('body').classList.add('modal-open');
+  bigPicture.classList.remove('hidden');
+
+  loadMoreButton.addEventListener('click', onClickLoadMoreButton);
+  document.addEventListener('keydown', onPopupEscKeydown);
+  cancel.addEventListener('click', onClickCancel);
+};
+
+const closePopup = () => {
+  bigPicture.classList.add('hidden');
+  document.querySelector('body').classList.remove('modal-open');
+  document.removeEventListener('keydown', onPopupEscKeydown);
+  cancel.removeEventListener('click', onClickCancel);
+  loadMoreButton.removeEventListener('click', onClickLoadMoreButton);
+};
 
 function onPopupEscKeydown (evt) {
   if (evt.key === 'Escape') {

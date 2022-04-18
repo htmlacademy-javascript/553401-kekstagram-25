@@ -1,6 +1,6 @@
 import {renderPictures} from './render-pictures.js';
 import {closePopup} from './form-display.js';
-import {showAlert, debounce, RERENDER_DELAY} from './util.js';
+import {showAlert, debouncing, RERENDER_DELAY} from './util.js';
 import {setUserFormSubmit} from './form-validate.js';
 import {getData} from './api.js';
 import {filtersBlock, setActiveFilterClick, getFilteredArray} from './filters.js';
@@ -8,7 +8,7 @@ import {filtersBlock, setActiveFilterClick, getFilteredArray} from './filters.js
 getData(
   (photos) => {
     renderPictures(photos);
-    setActiveFilterClick(debounce(
+    setActiveFilterClick(debouncing(
       () => renderPictures(getFilteredArray(photos)),
       RERENDER_DELAY,
     ));
